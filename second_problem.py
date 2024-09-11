@@ -42,6 +42,14 @@ class ArraysBufferFifo:
         else:
             self.__arr = self.__arr[:self.__index_last_element+1]
             self.__capacity = self.__index_last_element + 1
+
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.__index_last_element == -1:
+            raise StopIteration
+        return self.get()
         
 class ListNodeBufferFifo:
     def __init__(self) -> None:
@@ -65,6 +73,14 @@ class ListNodeBufferFifo:
 
     def __len__(self)->int:
         return self.__size
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.__size == 0:
+            raise StopIteration
+        return self.get()
     
     class Node:
         def __init__(self, value = None, previous = None) -> None:
@@ -125,6 +141,14 @@ def testArraysBufferFifo():
     expectation = 3
     assert buffer.capacity() == expectation
 
+    new_buffer = ArraysBufferFifo()
+    test_list = [1,2,3,4,5,6,7]
+    len_test_list = len(test_list)
+    for item in test_list:
+        new_buffer.put(item)
+    for i, item in enumerate(new_buffer):
+        assert item == test_list[len_test_list - i - 1]
+
 def testListNodeBufferFifo():
     print('_____________testListNodeBufferFifo_____________')
     buffer = ListNodeBufferFifo()
@@ -154,6 +178,14 @@ def testListNodeBufferFifo():
     buffer.put(2)
     buffer.put(3)
     assert buffer.get() == 3
+
+    new_buffer = ListNodeBufferFifo()
+    test_list = [1,2,3,4,5,6,7]
+    len_test_list = len(test_list)
+    for item in test_list:
+        new_buffer.put(item)
+    for i, item in enumerate(new_buffer):
+        assert item == test_list[len_test_list - i - 1]
 
 def main():
     testArraysBufferFifo()
